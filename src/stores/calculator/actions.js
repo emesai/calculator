@@ -1,16 +1,18 @@
 export default {
   addNumber({ commit, state }, number) {
-    const currentNumber = parseFloat(`${state.currentNumber}${number}`);
-    commit("updateNumber", currentNumber);
-    if (!state.currentOperator) {
-      if (state.history.length) {
-        commit("updateHistory", currentNumber);
+    if (!state.isEqual) {
+      const currentNumber = parseFloat(`${state.currentNumber}${number}`);
+      commit("updateNumber", currentNumber);
+      if (!state.currentOperator) {
+        if (state.history.length) {
+          commit("updateHistory", currentNumber);
+        } else {
+          commit("addHistory", currentNumber);
+        }
       } else {
         commit("addHistory", currentNumber);
+        commit("setOperator", "");
       }
-    } else {
-      commit("addHistory", currentNumber);
-      commit("setOperator", "");
     }
   },
   equal({ commit, state }) {
@@ -20,7 +22,7 @@ export default {
       commit(
         "currentTotal",
         eval(
-          `${state.currentTotal}${state.history[state.history.length - 2]}${
+          `${state.currentTotal} ${state.history[state.history.length - 2]} ${
             state.currentNumber
           }`
         )
